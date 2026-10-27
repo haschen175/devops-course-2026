@@ -31,3 +31,18 @@
 - 01-clean-install — чистая ОС после установки и обновления.
 - 02-keys-configured — настроен пользователь devops и вход по SSH-ключу.
 - 03-ssh-hardened — выполнен харденинг SSH на порту 2222.
+
+## 8. Веб-сервер
+- **Пакет:** `nginx` (устанавливается из стандартного репозитория Ubuntu: `sudo apt install -y nginx`).
+- **Конфигурация ресурса:** `/etc/nginx/sites-available/devops-site` (активируется символической ссылкой в `/etc/nginx/sites-enabled/devops-site`; стандартная ссылка `/etc/nginx/sites-enabled/default` удалена).
+- **Каталог ресурса:** `/var/www/devops-site`, владелец `devops:devops`, права доступа: `755` (`drwxr-xr-x`) для каталогов и `644` (`-rw-r--r--`) для файлов.
+- **Сертификат и закрытый ключ TLS:**
+  - Сертификат: `/etc/ssl/certs/devops.crt` (владелец `root:root`, права `644`).
+  - Закрытый ключ: `/etc/ssl/private/devops.key` (владелец `root:root`, права `600`).
+- **Команда формирования сертификата (срок действия — 365 дней):**
+  ```bash
+  sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/ssl/private/devops.key \
+    -out /etc/ssl/certs/devops.crt \
+    -subj "/CN=devops.local" \
+    -addext "subjectAltName=DNS:devops.local"
