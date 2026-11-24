@@ -31,3 +31,16 @@
 - 01-clean-install — чистая ОС после установки и обновления.
 - 02-keys-configured — настроен пользователь devops и вход по SSH-ключу.
 - 03-ssh-hardened — выполнен харденинг SSH на порту 2222.
+
+## 10. Ansible
+- Проект: каталог ansible/ этого репозитория. Управляющий узел — WSL Ubuntu (не PowerShell и не /mnt/c). Управляемый узел — devops-vm, 192.168.56.102.
+- inventory/bootstrap.ini: пользователь student, порт 22. Пароль в файл не записывается, на первом запуске он передаётся только через --extra-vars.
+- inventory/prod.ini: пользователь devops, порт 22, ключ ~/.ssh/devops_vm.
+- Роли: base — пакеты и Docker; ssh — учётка devops, ключ, sudo, запрет входа по паролю и root, UFW (22 и 80); nginx — reverse proxy на приложение; app — скачивание образа и контейнер.
+- Образ: ghcr.io/haschen175/devops-ci-app
+- Полный SHA: f598351cea7a5b8ac3c1b16c9b1c887b8b0520cd
+- Порт контейнера на ВМ: 127.0.0.1:5000. Снаружи страница открывается через Nginx на порту 80.
+- Health: http://192.168.56.102/health
+- Первый запуск на чистой ВМ: ansible-playbook -i inventory/bootstrap.ini site.yml
+- Повторный запуск: ansible-playbook site.yml
+- Проверка без изменений: ansible-playbook verify.yml
