@@ -1,0 +1,6 @@
+---
+app_image: "ghcr.io/haschen175/devops-ci-app"
+app_tag: "f598351cea7a5b8ac3c1b16c9b1c887b8b0520cd"
+app_container_name: "devops-ci-app"
+app_host_port: 5000
+app_internal_port: 5000
